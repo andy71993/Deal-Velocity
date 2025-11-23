@@ -89,19 +89,37 @@ This document tracks all implemented features and their verification status. It 
 - **Status**: ✅ Completed
 - **Description**: Implemented Pinecone vector store with OpenAI embeddings, hybrid search, and pattern extraction.
 - **Implemented Features**:
-  - **Embeddings**: OpenAI `text-embedding-3-small` integration with rate limiting and retry logic.
-  - **Vector Store**: Pinecone operations including batch upsert, search, and metadata filtering.
-  - **Hybrid Search**: Combined semantic (vector) and keyword (metadata) search with score fusion.
-  - **Pattern Extraction**: Analysis of search results to identify themes and metadata patterns.
+  - **Pinecone Integration**: Using latest SDK (`pinecone==8.0.0`)
+  - **Integrated Embeddings**: Pinecone handles embeddings automatically with `llama-text-embed-v2`
+  - **Vector Store**: Batch upsert, semantic search with reranking, metadata filtering
+  - **Automatic Reranking**: Uses `bge-reranker-v2-m3` for improved result quality
+  - **Pattern Extraction**: Analysis of search results to identify themes and metadata patterns
+  - **Namespace Isolation**: Required for all operations (multi-tenant support)
   - **API Endpoints**:
-    - `POST /embed` - Generate embeddings
-    - `POST /upsert` - Batch upload documents
-    - `POST /search` - Hybrid search
+    - `POST /upsert` - Batch upload documents (auto-embedded by Pinecone)
+    - `POST /search` - Semantic search with automatic reranking
     - `GET /similar/{doc_id}` - Find similar documents
     - `POST /patterns` - Extract patterns from results
-  - **Docker**: Created Dockerfile and added service to docker-compose.yml on port 8001.
-  - **Error Handling**: Comprehensive retry logic with exponential backoff for API calls.
+    - `GET /stats` - Index statistics
+  - **CLI Setup**: Uses Pinecone CLI for index management (best practice)
+- **Infrastructure**:
+  - Installed Pinecone CLI via Homebrew
+  - Created `deal-velocity` index with integrated `llama-text-embed-v2` embeddings
+  - Index: 1024 dimensions, cosine metric, us-east-1 (AWS)
+- **Refactoring**:
+  - Removed manual OpenAI embedding generation (Pinecone handles it)
+  - Removed deprecated `pinecone-client` package
+  - Updated to use `search()` API instead of old `query()` methods
+  - Updated to use `upsert_records()` instead of old `upsert()` methods
+  - Removed `embeddings.py` and `hybrid_search.py` (no longer needed)
 - **Verification**:
-  - *Note*: Service requires API keys (OPENAI_API_KEY, PINECONE_API_KEY) to run.
-  - Test script created at `services/vector-store/test_api.py`.
-  - Run with: `python services/vector-store/test_api.py` (after starting service).
+  - ✅ Health endpoint: `{"status":"healthy"}`
+  - ✅ Upserted 3 test documents successfully
+  - ✅ Search returns relevant results with scores (0.78, 0.76 for infrastructure docs)
+  - ✅ Semantic matching works: cloud/AWS docs ranked highest
+  - ✅ Metadata preserved: type, category, priority fields included
+  - ✅ Stats endpoint: `{"total_vector_count":3,"namespaces":["test-deals"]}`
+  - ✅ Service running on port 8001
+- **Documentation**:
+  - Created comprehensive `README.md` with setup instructions
+  - Saved Pinecone best practices guide as `CLAUDE.md`
