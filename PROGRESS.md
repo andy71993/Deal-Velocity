@@ -72,3 +72,54 @@ This document tracks all implemented features and their verification status. It 
   - ✅ Parse endpoint successfully processes files and returns JSON with `metadata` and `sections`.
   - Service running on port 8000.
   - Test with: `curl -X POST -F "file=@README.md" http://localhost:8000/parse`
+
+## [2025-11-23] Git Workflow Setup
+- **Status**: ✅ Completed
+- **Description**: Initialized Git repository and created branch workflow.
+- **Implemented Features**:
+  - Committed all project files to Git.
+  - Pushed initial commit to `main` branch on GitHub.
+  - Created `development` branch for ongoing development.
+- **Verification**:
+  - ✅ Repository: https://github.com/andy71993/Deal-Velocity
+  - ✅ Main branch pushed successfully.
+  - ✅ Development branch created and set as tracking branch.
+
+## [2025-11-23] Vector Store Service
+- **Status**: ✅ Completed
+- **Description**: Implemented Pinecone vector store with OpenAI embeddings, hybrid search, and pattern extraction.
+- **Implemented Features**:
+  - **Pinecone Integration**: Using latest SDK (`pinecone==8.0.0`)
+  - **Integrated Embeddings**: Pinecone handles embeddings automatically with `llama-text-embed-v2`
+  - **Vector Store**: Batch upsert, semantic search with reranking, metadata filtering
+  - **Automatic Reranking**: Uses `bge-reranker-v2-m3` for improved result quality
+  - **Pattern Extraction**: Analysis of search results to identify themes and metadata patterns
+  - **Namespace Isolation**: Required for all operations (multi-tenant support)
+  - **API Endpoints**:
+    - `POST /upsert` - Batch upload documents (auto-embedded by Pinecone)
+    - `POST /search` - Semantic search with automatic reranking
+    - `GET /similar/{doc_id}` - Find similar documents
+    - `POST /patterns` - Extract patterns from results
+    - `GET /stats` - Index statistics
+  - **CLI Setup**: Uses Pinecone CLI for index management (best practice)
+- **Infrastructure**:
+  - Installed Pinecone CLI via Homebrew
+  - Created `deal-velocity` index with integrated `llama-text-embed-v2` embeddings
+  - Index: 1024 dimensions, cosine metric, us-east-1 (AWS)
+- **Refactoring**:
+  - Removed manual OpenAI embedding generation (Pinecone handles it)
+  - Removed deprecated `pinecone-client` package
+  - Updated to use `search()` API instead of old `query()` methods
+  - Updated to use `upsert_records()` instead of old `upsert()` methods
+  - Removed `embeddings.py` and `hybrid_search.py` (no longer needed)
+- **Verification**:
+  - ✅ Health endpoint: `{"status":"healthy"}`
+  - ✅ Upserted 3 test documents successfully
+  - ✅ Search returns relevant results with scores (0.78, 0.76 for infrastructure docs)
+  - ✅ Semantic matching works: cloud/AWS docs ranked highest
+  - ✅ Metadata preserved: type, category, priority fields included
+  - ✅ Stats endpoint: `{"total_vector_count":3,"namespaces":["test-deals"]}`
+  - ✅ Service running on port 8001
+- **Documentation**:
+  - Created comprehensive `README.md` with setup instructions
+  - Saved Pinecone best practices guide as `CLAUDE.md`
