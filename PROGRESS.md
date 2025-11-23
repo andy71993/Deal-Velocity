@@ -84,3 +84,24 @@ This document tracks all implemented features and their verification status. It 
   - ✅ Repository: https://github.com/andy71993/Deal-Velocity
   - ✅ Main branch pushed successfully.
   - ✅ Development branch created and set as tracking branch.
+
+## [2025-11-23] Vector Store Service
+- **Status**: ✅ Completed
+- **Description**: Implemented Pinecone vector store with OpenAI embeddings, hybrid search, and pattern extraction.
+- **Implemented Features**:
+  - **Embeddings**: OpenAI `text-embedding-3-small` integration with rate limiting and retry logic.
+  - **Vector Store**: Pinecone operations including batch upsert, search, and metadata filtering.
+  - **Hybrid Search**: Combined semantic (vector) and keyword (metadata) search with score fusion.
+  - **Pattern Extraction**: Analysis of search results to identify themes and metadata patterns.
+  - **API Endpoints**:
+    - `POST /embed` - Generate embeddings
+    - `POST /upsert` - Batch upload documents
+    - `POST /search` - Hybrid search
+    - `GET /similar/{doc_id}` - Find similar documents
+    - `POST /patterns` - Extract patterns from results
+  - **Docker**: Created Dockerfile and added service to docker-compose.yml on port 8001.
+  - **Error Handling**: Comprehensive retry logic with exponential backoff for API calls.
+- **Verification**:
+  - *Note*: Service requires API keys (OPENAI_API_KEY, PINECONE_API_KEY) to run.
+  - Test script created at `services/vector-store/test_api.py`.
+  - Run with: `python services/vector-store/test_api.py` (after starting service).

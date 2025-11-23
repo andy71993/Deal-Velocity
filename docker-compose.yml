@@ -20,3 +20,16 @@ services:
       - "8000:8000"
     volumes:
       - ./services/document-processor:/app/services/document-processor
+
+  vector-store:
+    build:
+      context: .
+      dockerfile: services/vector-store/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - PINECONE_ENVIRONMENT=${PINECONE_ENVIRONMENT}
+    volumes:
+      - ./services/vector-store:/app
