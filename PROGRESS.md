@@ -72,3 +72,15 @@ This document tracks all implemented features and their verification status. It 
   - ✅ Parse endpoint successfully processes files and returns JSON with `metadata` and `sections`.
   - Service running on port 8000.
   - Test with: `curl -X POST -F "file=@README.md" http://localhost:8000/parse`
+
+## [2025-11-23] Git Workflow Setup
+- **Status**: ✅ Completed
+- **Description**: Initialized Git repository and created branch workflow.
+- **Implemented Features**:
+  - Committed all project files to Git.
+  - Pushed initial commit to `main` branch on GitHub.
+  - Created `development` branch for ongoing development.
+- **Verification**:
+  - ✅ Repository: https://github.com/andy71993/Deal-Velocity
+  - ✅ Main branch pushed successfully.
+  - ✅ Development branch created and set as tracking branch.
