@@ -7,11 +7,9 @@ class VectorStore:
     def __init__(
         self,
         api_key: str = None,
-        environment: str = None,
         index_name: str = "deal-velocity"
     ):
         self.pc = Pinecone(api_key=api_key or os.getenv("PINECONE_API_KEY"))
-        self.environment = environment or os.getenv("PINECONE_ENVIRONMENT", "us-east-1-aws")
         self.index_name = index_name
         self.dimension = 1536  # text-embedding-3-small dimension
         self.index = None
@@ -29,7 +27,7 @@ class VectorStore:
                 metric="cosine",
                 spec=ServerlessSpec(
                     cloud="aws",
-                    region=self.environment
+                    region="us-east-1"
                 )
             )
             # Wait for index to be ready
