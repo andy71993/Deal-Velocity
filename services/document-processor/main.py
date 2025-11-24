@@ -25,3 +25,23 @@ async def parse_file(file: UploadFile = File(...)):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+from redline_generator import create_redlined_document
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+from typing import List
+
+class RedlineRequest(BaseModel):
+    original_text: str
+    changes: List[dict] # [{'original': '...', 'new': '...'}]
+
+@app.post("/redline")
+async def generate_redline(request: RedlineRequest):
+    try:
+        file_stream = create_redlined_document(request.original_text, request.changes)
+        return StreamingResponse(
+            file_stream, 
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            headers={"Content-Disposition": "attachment; filename=redlined_contract.docx"}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
