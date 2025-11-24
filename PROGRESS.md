@@ -211,3 +211,14 @@ This document tracks all implemented features and their verification status. It 
    - User guides for each module
    - API documentation
    - Deployment runbook
+
+## ⚠️ Known Issues
+
+### RFP Parser Not Responding (2025-11-24)
+- **Issue**: RFP text parsing button doesn't trigger any action when clicked
+- **Status**: Requires debugging
+- **Next Steps**: 
+  - Check browser console for JavaScript errors
+  - Verify API endpoint is accessible
+  - Check OpenAI API key configuration
+  - Review error handling in frontend and backend
